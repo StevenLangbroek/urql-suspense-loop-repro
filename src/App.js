@@ -1,5 +1,8 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import { Suspense } from "react";
+import { Query } from "urql";
+import gql from "graphql-tag";
 
 function App() {
   return (
@@ -17,6 +20,26 @@ function App() {
         >
           Learn React
         </a>
+        <Suspense fallback={<h2>Loading jobs...</h2>}>
+          <Query
+            query={gql`
+              {
+                job(input: { companySlug: "blabla" }) {
+                  id
+                  title
+                }
+              }
+            `}
+          >
+            {(result) => {
+              return (
+                <pre>
+                  <code>{JSON.stringify(result.data, null, 2)}</code>
+                </pre>
+              );
+            }}
+          </Query>
+        </Suspense>
       </header>
     </div>
   );
